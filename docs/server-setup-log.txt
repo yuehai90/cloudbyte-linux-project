@@ -1,0 +1,38 @@
+CloudByte Server Setup Log
+==========================
+Date: 2026-11-23
+Author: <Yuehai Sun> (admin)
+Host: cloudbyte (Amazon Linux 2023, Vagrant)
+
+1. Groups created
+-----------------
+engineering, marketing, operations, admins
+
+2. Users (12) by department
+---------------------------
+engineering : alice, bob, carol, dave
+marketing : emma, frank, grace
+operations : henry, iris, jack, kate*, leo*
+admins : kate*, leo*
+(* kate and leo are members of BOTH operations and admins)
+
+3. Directory tree
+-----------------
+PATH OWNER:GROUP MODE PURPOSE
+/shared root:root 755 top level
+/shared/engineering root:engineering 770 team only
+/shared/marketing root:marketing 770 team only
+/shared/operations root:operations 770 team only
+/shared/company-docs root:admins 775 read all / write admins
+/shared/logs/reports root:admins 775 read all / write admins
+
+4. Access tests
+--------------------------------------------------
+alice : enter+write engineering OK | marketing, operations DENIED (expected)
+emma : enter+write marketing OK | engineering DENIED (expected)
+henry : enter+write operations OK | engineering DENIED (expected)
+kate : write operations OK, wrote company-docs/memo.txt OK
+emma : read memo.txt OK | append to memo.txt DENIED (expected)
+
+5. Problems & fixes
+-------------------
