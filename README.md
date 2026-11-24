@@ -38,6 +38,7 @@ log in one go. Run it on the VM with:
 
     # Track 1 (Vagrant): repo is mounted at /vagrant
     bash /vagrant/verify-foundations.sh
+    bash /vagrant/verify-permissions.sh
 
     # Track 2 (Lima): repo is mounted at /host inside the VM
     bash /host/verify-foundations.sh
