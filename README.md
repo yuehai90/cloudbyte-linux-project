@@ -42,3 +42,61 @@ log in one go. Run it on the VM with:
 
     # Track 2 (Lima): repo is mounted at /host inside the VM
     bash /host/verify-foundations.sh
+
+
+## Section 2: File Management and Permissions
+
+Hardened the team folders and added a shared dropbox. Setgid makes team
+ownership reliable; the sticky bit makes the dropbox tamper-resistant.
+A permissions test report records what was attempted and what happened.
+
+### Updated directory modes
+
+| Path | Owner:Group | Mode | What's special |
+|---|---|---|---|
+| `/shared/engineering` | `root:engineering` | `2770` | setgid set |
+| `/shared/marketing` | `root:marketing` | `2770` | setgid set |
+| `/shared/operations` | `root:operations` | `2770` | setgid set |
+| `/shared/dropbox` | `root:admins` | `1773` | sticky bit; others can write but not list |
+
+### Verification
+
+`verify-permissions.sh` checks the team folders, the dropbox, the sample
+files, and setgid propagation. Run it on the VM with:
+
+    # Track 1 (Vagrant): repo is mounted at /vagrant
+    bash /vagrant/verify-permissions.sh
+
+    # Track 2 (Lima): repo is mounted at /host inside the VM
+    bash /host/verify-permissions.sh
+
+
+## Section 3: User Onboarding Automation
+
+Replaced Section 1's manual user-creation work with a single script,
+`scripts/onboard-user.sh`, that takes either an interactive prompt or a
+CSV of new hires. Strict mode catches failures early, a `create_user`
+function carries the four mutating commands, and `--dry-run` lets the
+script be exercised without touching real accounts.
+
+### Script flags
+
+| Flag             | Purpose                                                   |
+|------------------|-----------------------------------------------------------|
+| `--csv PATH`     | Read users from a CSV (`username,group,fullname`)         |
+| `--dry-run`      | Print intended actions without creating anything          |
+| `-h`, `--help`   | Print the Usage block from the script header              |
+
+A sample CSV ships at `data/new-hires.csv` for repeat runs and
+idempotency checks.
+
+### Verification
+
+`verify-onboarding.sh` walks the script and the CSV end-to-end and
+prints a ✅ or ❌ for each requirement. Run it on the VM with:
+
+    # Track 1 (Vagrant): repo is mounted at /vagrant
+    bash /vagrant/verify-onboarding.sh
+
+    # Track 2 (Lima): repo is mounted at /host inside the VM
+    bash /host/verify-onboarding.sh
