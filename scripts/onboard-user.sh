@@ -66,11 +66,15 @@ create_user() {
         return 0
     fi
 
+    #if [ "$DRY_RUN" = true ]; then
+    #    echo "[dry-run] would create $username in $group with temp password"
+    #    return 0
+    #fi
+
     useradd -m -c "$fullname" "$username"
     echo "$username:$TEMP_PASSWORD" | chpasswd
     usermod -aG "$group" "$username"
     chage -d 0 "$username"
-
     echo "Created $username in group $group with temp password (must change on first login)."
 }
 
